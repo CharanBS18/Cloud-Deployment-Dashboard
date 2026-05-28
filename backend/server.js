@@ -13,7 +13,7 @@ const db = require('./database');
 const { requestLogger, registerSseClient, getLogHistory, logMessage } = require('./logger');
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkeyforlocaldevelopment';
 
 // Setup Middlewares
@@ -341,4 +341,4 @@ app.get('/api/monitor/stats', async (req, res) => {
 // Start Server
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
-});
+}); 
