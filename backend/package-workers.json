@@ -1,0 +1,18 @@
+{
+  "name": "cloud-deployment-dashboard-workers",
+  "version": "1.0.0",
+  "description": "Cloudflare Workers backend for Cloud Deployment Dashboard",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler deploy --env production"
+  },
+  "dependencies": {
+    "itty-router": "^4.11.2",
+    "@tsndr/cloudflare-worker-jwt": "^0.0.2"
+  },
+  "devDependencies": {
+    "wrangler": "^3.57.0"
+  }
+}
