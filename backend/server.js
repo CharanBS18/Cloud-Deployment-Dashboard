@@ -340,5 +340,5 @@ app.get('/api/monitor/stats', async (req, res) => {
 
 // Start Server
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Cloud Deployment Dashboard server running on http://0.0.0.0:${PORT}`);
+  console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
