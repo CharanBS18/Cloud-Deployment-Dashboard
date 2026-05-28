@@ -5,7 +5,8 @@ import {
   Play, Check, FileCode, ExternalLink, ShieldCheck, ChevronRight
 } from 'lucide-react';
 
-const API_BASE = 'http://localhost:5001/api';
+const API_URL = "http://51.21.243.194:5000";
+const API_BASE = import.meta.env.VITE_API_URL || API_URL + '/api';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
@@ -67,7 +68,7 @@ export default function App() {
     const interval = setInterval(fetchStats, 3000);
 
     // Initialize SSE Log stream
-    sseRef.current = new EventSource(`http://localhost:5001/api/monitor/logs/stream`);
+    sseRef.current = new EventSource(`${API_BASE}/monitor/logs/stream`);
     
     sseRef.current.onmessage = (event) => {
       const log = JSON.parse(event.data);
