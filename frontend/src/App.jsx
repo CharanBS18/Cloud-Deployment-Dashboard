@@ -32,7 +32,7 @@ export default function App() {
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token);
-      fetchUser();
+      fetchUser(token);
     } else {
       localStorage.removeItem('token');
       setUser(null);
@@ -40,10 +40,10 @@ export default function App() {
   }, [token]);
 
   // Fetch logged in user profile
-  const fetchUser = async () => {
+  const fetchUser = async (authToken) => {
     try {
       const res = await fetch(`${API_BASE}/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${authToken}` }
       });
       if (res.ok) {
         const data = await res.json();
@@ -53,6 +53,7 @@ export default function App() {
       }
     } catch (err) {
       console.error('Auth error:', err);
+      setToken('');
     }
   };
 
@@ -135,6 +136,8 @@ export default function App() {
       const data = await res.json();
       if (res.ok) {
         setToken(data.token);
+        setUsernameInput('');
+        setPasswordInput('');
       } else {
         setAuthError(data.error || 'Authentication failed');
       }
