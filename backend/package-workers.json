@@ -8,10 +8,6 @@
     "deploy": "wrangler deploy",
     "preview": "wrangler deploy --env production"
   },
-  "dependencies": {
-    "itty-router": "^4.11.2",
-    "@tsndr/cloudflare-worker-jwt": "^0.0.2"
-  },
   "devDependencies": {
     "wrangler": "^3.57.0"
   }
