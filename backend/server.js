@@ -7,7 +7,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const os = require('os');
-const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
 const db = require('./database');
 const { requestLogger, registerSseClient, getLogHistory, logMessage } = require('./logger');
@@ -35,26 +34,8 @@ db.init().then(() => {
   console.log('Database initialized successfully.');
 });
 
-// AWS S3 client setup (Optional, defaults to local storage if keys are missing)
-const isS3Configured = !!(
-  process.env.AWS_ACCESS_KEY_ID &&
-  process.env.AWS_SECRET_ACCESS_KEY &&
-  process.env.AWS_S3_BUCKET
-);
-
-let s3Client = null;
-if (isS3Configured) {
-  s3Client = new S3Client({
-    region: process.env.AWS_REGION || 'us-east-1',
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-    }
-  });
-  console.log('AWS S3 upload client configured.');
-} else {
-  console.log('AWS S3 credentials not found. Defaulting to local uploads/ directory.');
-}
+// Local file storage configuration (no AWS S3)
+console.log('Using local file storage for uploads.');
 
 // Multer Storage Configuration
 const storage = multer.diskStorage({
