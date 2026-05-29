@@ -44,18 +44,52 @@ async function verifyToken(request) {
 
     const [header, body, signature] = parts;
     
+    // Helper function to decode base64url
+    function base64urlToBuffer(str) {
+      // Add padding if needed
+      let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+      base64 += '='.repeat((4 - (base64.length % 4)) % 4);
+      const binaryString = atob(base64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      return bytes;
+    }
+    
     const encoder = new TextEncoder();
-    const key = await crypto.subtle.importKey('raw', encoder.encode(JWT_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']);
-    const isValid = await crypto.subtle.verify('HMAC', key, new Uint8Array(atob(signature.replace(/-/g, '+').replace(/_/g, '/') + '===').split('').map(c => c.charCodeAt(0))), encoder.encode(`${header}.${body}`));
+    const key = await crypto.subtle.importKey(
+      'raw', 
+      encoder.encode(JWT_SECRET), 
+      { name: 'HMAC', hash: 'SHA-256' }, 
+      false, 
+      ['verify']
+    );
+    
+    const isValid = await crypto.subtle.verify(
+      'HMAC', 
+      key, 
+      base64urlToBuffer(signature),
+      encoder.encode(`${header}.${body}`)
+    );
     
     if (!isValid) return null;
 
-    const payload = JSON.parse(atob(body.replace(/-/g, '+').replace(/_/g, '/')));
+    // Decode payload
+    function base64urlToString(str) {
+      let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+      base64 += '='.repeat((4 - (base64.length % 4)) % 4);
+      return atob(base64);
+    }
     
+    const payload = JSON.parse(base64urlToString(body));
+    
+    // Check expiration
     if (payload.exp < Math.floor(Date.now() / 1000)) return null;
     
     return payload;
   } catch (err) {
+    console.error('Token verification error:', err);
     return null;
   }
 }
